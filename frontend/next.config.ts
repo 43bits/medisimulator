@@ -1,15 +1,27 @@
 import type { NextConfig } from "next";
 
+const FALLBACK = "http://localhost:3000";
+
+function resolveBackend(): string {
+  const raw = (
+    process.env.API_BASE_URL ??
+    process.env.NEXT_PUBLIC_API_BASE_URL ??
+    ""
+  )
+    .trim()
+    .replace(/\/$/, "");
+
+  return /^https?:\/\//.test(raw) ? raw : FALLBACK;
+}
+
+const backend = resolveBackend();
+
 const nextConfig: NextConfig = {
   env: {
-    NEXT_API_BASE_URL:
-      process.env.NEXT_API_BASE_URL ?? "http://localhost:3000",
+    NEXT_PUBLIC_API_BASE_URL: backend,
   },
-  // Proxy /api-proxy/* → backend so the browser never needs to know the
-  // backend URL at all. This completely bypasses the env-var issue.
+  // Proxy /api-proxy/* -> backend so the browser never needs the backend URL.
   async rewrites() {
-    const backend =
-      process.env.NEXT_API_BASE_URL ?? "http://localhost:3000";
     return [
       {
         source: "/api-proxy/:path*",
