@@ -404,7 +404,7 @@ export class BillingService {
     const baseUrl =
       process.env.FRONTEND_PUBLIC_URL ||
       process.env.FRONTEND_URL ||
-      process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.NEXT_APP_URL ||
       'http://localhost:3001';
     const url = new URL('/invoice-verify', baseUrl);
     url.searchParams.set('invoice', invoice.invoiceNumber);

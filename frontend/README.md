@@ -56,7 +56,7 @@ Conventions:
 | Variable | Purpose |
 | --- | --- |
 | `NEXT_API_BASE_URL` | Backend base URL (required on deployments) |
-| `NEXT_PUBLIC_APP_URL` | Canonical app URL for links/QRs |
+| `NEXT_APP_URL` | Canonical app URL for links/QRs |
 
 ## Deployment
 
