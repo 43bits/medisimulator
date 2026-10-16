@@ -15,7 +15,7 @@
   --brand: oklch(0.52 0.11 235);            /* meridian blue */
   --brand-strong: oklch(0.44 0.11 240);
   --pulse: oklch(0.72 0.13 210);            /* live/active cyan */
-
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
   /* Surfaces (layered elevation) */
   --background: oklch(0.982 0.005 230);
   --surface-1: oklch(1 0 0);
