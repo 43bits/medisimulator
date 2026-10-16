@@ -1,0 +1,16 @@
+mobile/
+├── app.json / package.json / tsconfig.json / babel.config.js / metro.config.js
+├── app/
+│   ├── _layout.tsx          ← ThemeProvider > AuthProvider > Stack
+│   ├── index.tsx            ← redirect to tabs or login
+│   ├── login.tsx            ← Login screen
+│   └── (tabs)/
+│       ├── _layout.tsx      ← bottom tab bar (4 tabs)
+│       ├── dashboard.tsx    ← Command Center
+│       ├── appointments.tsx ← Scheduled + Online Requests tabs
+│       ├── patients.tsx     ← Search + patient list
+│       └── profile.tsx      ← Account info + sign out
+├── components/ui/           ← Button, Card, Badge, Input, etc.
+├── constants/tokens.ts      ← Full Meridian color system
+├── context/                 ← AuthContext, ThemeContext
+└── services/                ← api, auth, dashboard, appointments, patients

@@ -1,0 +1,82 @@
+=========================================================
+  SETUP (first time / after db reset)
+=========================================================
+cd backend
+npm ci                           # installs deps + runs prisma generate
+npm run prisma:migrate:deploy    # applies all migrations
+npm run db:seed:safe             # seeds admin user
+node scripts/seed-all-roles.mjs  # seeds all 16 roles + test users
+
+=========================================================
+  START BACKEND  (Terminal 1)
+=========================================================
+cd backend
+
+cd "D:\workD\Fdrive\projects\invinceible_core_hms_v2-main\invinceible_core_hms_v2-main\backend"
+npm run start:dev
+
+cd "D:\workD\Fdrive\projects\invinceible_core_hms_v2-main\invinceible_core_hms_v2-main\frontend"
+npm run dev -- -p 3001
+
+
+
+# RECOMMENDED — auto-kills port 3000 before starting (prevents EADDRINUSE)
+npm run start:dev:safe
+
+# If start:dev:safe is not available, manually kill first:
+#   netstat -ano | findstr :3000
+#   taskkill /PID <PID> /F
+#   npm run start:dev
+
+API runs on: http://localhost:3000
+
+=========================================================
+  START FRONTEND  (Terminal 2)
+=========================================================
+cd frontend
+npm run dev
+
+
+cd "D:\workD\Fdrive\projects\invinceible_core_hms_v2-main\invinceible_core_hms_v2-main\frontend"
+npm run dev
+
+
+App runs on: http://localhost:3001
+
+=========================================================
+  LOGIN CREDENTIALS
+=========================================================
+URL:       http://localhost:3001/login
+
+username: admin          password: password123
+username: super_admin    password: password123
+username: doctor         password: password123
+username: pharmacist     password: password123
+username: cashier        password: password123
+username: lab_technician password: password123
+(see scripts/seed-all-roles.mjs for full list)
+
+=========================================================
+  PATIENT BOOKING (public - no login needed)
+=========================================================
+URL: http://localhost:3001/book-appointment
+
+Staff review pending bookings:
+  Dashboard → Appointments → "Online Requests" tab
+
+=========================================================
+  IF PORT IS STUCK
+=========================================================
+netstat -ano | findstr :3000 | findstr LISTENING
+taskkill /PID <PID_FROM_ABOVE> /F
+
+netstat -ano | findstr :3001 | findstr LISTENING
+taskkill /PID <PID_FROM_ABOVE> /F
+
+=========================================================
+  KILL ALL NODE PROCESSES (nuclear option)
+=========================================================
+taskkill /IM node.exe /F
+
+
+http://localhost:3001/book-appointment

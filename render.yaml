@@ -1,0 +1,206 @@
+################################################################################
+# MedSimulator HMS — Render deployment manifest
+# Docs: https://render.com/docs/yaml-spec
+#
+# HOW TO USE
+# 1. Push this repo to GitHub.
+# 2. Create a new Render "Blueprint" and point it at this file.
+# 3. Render will create the web service below.
+# 4. Add the env vars marked "sync: false" in the Render dashboard after
+#    the first deploy (DATABASE_URL, DATABASE_URL_DIRECT, JWT_SECRET, etc.)
+################################################################################
+
+services:
+  - type: web
+    name: hms-backend
+    runtime: node
+    region: oregon          # change to frankfurt/singapore if closer to users
+    plan: free
+
+    # Render sets rootDir as the working directory for all commands
+    rootDir: invinceible_core_hms_v2-main/backend   # adjust if repo root differs
+
+    buildCommand: npm ci && npm run prisma:generate:pg && npm run build
+    startCommand: npm run render:migrate && npm run start:prod
+
+    # Health check — Render will restart the instance if this fails
+    healthCheckPath: /health
+
+    # Render free tier sleeps after 15 min idle; external pinger keeps it warm.
+    # Set AUTO_DEPLOY=false to require manual deploys.
+    autoDeploy: true
+
+    envVars:
+      # ── Runtime ─────────────────────────────────────────────────────────────
+      - key: NODE_ENV
+        value: production
+
+      - key: DATABASE_PROVIDER
+        value: postgresql
+
+      # Pooled Neon connection string (used by Prisma Client at runtime)
+      # Format: postgresql://user:pass@ep-xxx.region.aws.neon.tech/neondb?sslmode=require&pgbouncer=true
+      - key: DATABASE_URL
+        sync: false          # set in Render dashboard — never commit secrets
+
+      # Non-pooled Neon connection string (used by Prisma Migrate)
+      # Format: postgresql://user:pass@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
+      - key: DATABASE_URL_DIRECT
+        sync: false
+
+      # ── Auth ─────────────────────────────────────────────────────────────────
+      - key: JWT_SECRET
+        generateValue: true  # Render generates a strong random value on first deploy
+
+      - key: JWT_EXPIRES_IN
+        value: 1d
+
+      - key: PASSWORD_MIN_LENGTH
+        value: "12"
+
+      - key: AUTH_FAILED_LOGIN_DELAY_MAX_MS
+        value: "2500"
+
+      - key: STEP_UP_TTL_SECONDS
+        value: "300"
+
+      - key: STEP_UP_ENFORCEMENT_ENABLED
+        value: "false"
+
+      # ── CORS — set to your Vercel / Netlify frontend URL ─────────────────────
+      - key: FRONTEND_URL
+        sync: false
+
+      - key: FRONTEND_ORIGINS
+        sync: false
+
+      - key: PUBLIC_API_BASE_URL
+        sync: false
+
+      # ── Trust Render's load-balancer proxy ───────────────────────────────────
+      - key: TRUST_PROXY
+        value: "true"
+
+      # ── Rate limits / request safety ─────────────────────────────────────────
+      - key: RATE_LIMIT_TTL_SECONDS
+        value: "60"
+
+      - key: RATE_LIMIT_MAX
+        value: "120"
+
+      - key: AUTH_RATE_LIMIT_MAX
+        value: "10"
+
+      - key: REQUEST_TIMEOUT_MS
+        value: "30000"
+
+      - key: BODY_LIMIT
+        value: 4mb
+
+      - key: PDF_IMAGE_MAX_BYTES
+        value: "512000"
+
+      # ── Cache (in-memory only on free tier — no Redis) ────────────────────────
+      - key: REDIS_URL
+        value: ""            # leave empty; cache falls back to in-process LRU
+
+      - key: CACHE_PREFIX
+        value: inv_hms
+
+      - key: CACHE_DEFAULT_TTL_SECONDS
+        value: "60"
+
+      - key: CACHE_DASHBOARD_TTL_SECONDS
+        value: "30"
+
+      - key: CACHE_REFERENCE_TTL_SECONDS
+        value: "300"
+
+      - key: CACHE_IN_MEMORY_MAX_ITEMS
+        value: "10000"
+
+      # ── Queue / worker ────────────────────────────────────────────────────────
+      - key: QUEUE_ENABLED
+        value: "false"       # single-instance free tier; disable bg queue
+
+      - key: WORKER_MODE
+        value: "false"
+
+      # ── AI assistant ──────────────────────────────────────────────────────────
+      - key: GEMINI_API_KEY
+        sync: false
+
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash-lite
+
+      # ── M-PESA (leave empty until you have production credentials) ────────────
+      - key: MPESA_ENV
+        value: sandbox
+
+      - key: MPESA_CONSUMER_KEY
+        sync: false
+
+      - key: MPESA_CONSUMER_SECRET
+        sync: false
+
+      - key: MPESA_PASSKEY
+        sync: false
+
+      - key: MPESA_SHORTCODE
+        value: "174379"
+
+      - key: MPESA_CALLBACK_URL
+        sync: false
+
+      - key: MPESA_TRANSACTION_TYPE
+        value: CustomerPayBillOnline
+
+      - key: MPESA_PROMPT_LOCK_SECONDS
+        value: "90"
+
+      - key: MPESA_MAX_CONCURRENT_PROMPTS
+        value: "20"
+
+      - key: MPESA_REQUEST_TIMEOUT_MS
+        value: "15000"
+
+      - key: MPESA_STATUS_CACHE_SECONDS
+        value: "10"
+
+      # ── eTIMS / DHA (disabled by default) ────────────────────────────────────
+      - key: ETIMS_ENABLED
+        value: "false"
+
+      - key: ETIMS_MODE
+        value: mock
+
+      - key: DHA_ENABLED
+        value: "false"
+
+      - key: DHA_MODE
+        value: mock
+
+      - key: INTEGRATION_WORKER_ENABLED
+        value: "true"
+
+      - key: INTEGRATION_WORKER_POLL_MS
+        value: "5000"
+
+      - key: INTEGRATION_QUEUE_BATCH_SIZE
+        value: "10"
+
+      - key: INTEGRATION_RETRY_BASE_DELAY_MS
+        value: "30000"
+
+      - key: INTEGRATION_RETRY_MAX_DELAY_MS
+        value: "3600000"
+
+      - key: INTEGRATION_STUCK_REQUEST_MS
+        value: "600000"
+
+      # ── Password reset ────────────────────────────────────────────────────────
+      - key: PASSWORD_RESET_BASE_URL
+        sync: false
+
+      - key: RETURN_DEV_RESET_TOKEN
+        value: "false"

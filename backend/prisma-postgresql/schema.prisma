@@ -1,0 +1,1919 @@
+// AUTO-GENERATED from prisma/schema.prisma.
+// Do not edit directly. Run `npm run prisma:schema:postgres` after changing
+// the canonical MySQL schema. This schema keeps the same Prisma model names
+// while switching the datasource provider to PostgreSQL for Render migration.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_DIRECT")
+}
+
+model Facility {
+  id                      Int                           @id @default(autoincrement())
+  code                    String                        @unique @db.VarChar(50)
+  branchCode              String?                       @unique @db.VarChar(50)
+  name                    String                        @db.VarChar(255)
+  facilityType            String?                       @db.VarChar(100)
+  county                  String?                       @db.VarChar(120)
+  town                    String?                       @db.VarChar(120)
+  country                 String?                       @db.VarChar(120)
+  phone                   String?                       @db.VarChar(50)
+  altPhone                String?                       @db.VarChar(50)
+  email                   String?                       @db.VarChar(255)
+  website                 String?                       @db.VarChar(255)
+  address                 String?                       @db.VarChar(255)
+  postalAddress           String?                       @db.VarChar(255)
+  registrationNo          String?                       @db.VarChar(100)
+  taxPin                  String?                       @db.VarChar(100)
+  licenseNumber           String?                       @db.VarChar(100)
+  logoUrl                 String?                       @db.Text
+  timezone                String?                       @db.VarChar(100)
+  currency                String?                       @db.VarChar(20)
+  mpesaShortcode          String?                       @db.VarChar(50)
+  mpesaPaybill            String?                       @db.VarChar(50)
+  mpesaTillNumber         String?                       @db.VarChar(50)
+  isHeadOffice            Boolean                       @default(false)
+  isDefault               Boolean                       @default(false)
+  isActive                Boolean                       @default(true)
+  createdAt               DateTime                      @default(now())
+  updatedAt               DateTime                      @updatedAt
+  mpesaAccountNumber      String?                       @db.VarChar(80)
+  mpesaPochiNumber        String?                       @db.VarChar(80)
+  latitude                Float?
+  longitude               Float?
+  mapLocationLabel        String?                       @db.VarChar(255)
+  googleMapsUrl           String?                       @db.VarChar(500)
+  showCashOnInvoice       Boolean                       @default(true)
+  showPaybillOnInvoice    Boolean                       @default(true)
+  showTillOnInvoice       Boolean                       @default(true)
+  showPochiOnInvoice      Boolean                       @default(true)
+  shaFidCode              String?                       @db.VarChar(120)
+  shaClaimStartNumber     Int                           @default(1)
+  shaClaimNextNumber      Int                           @default(1)
+  subscriptionMonthlyFee  Float                         @default(5000)
+  subscriptionStartedAt   DateTime?
+  subscriptionPaidThrough DateTime?
+  subscriptionStatus      String                        @default("ACTIVE") @db.VarChar(50)
+  subscriptionLockedAt    DateTime?
+  mpesaEnabled            Boolean                       @default(false)
+  mpesaEnvironment        String?                       @db.VarChar(30)
+  mpesaConsumerKey        String?                       @db.Text
+  mpesaConsumerSecret     String?                       @db.Text
+  mpesaPasskey            String?                       @db.Text
+  mpesaCallbackUrl        String?                       @db.VarChar(500)
+  mpesaTransactionType    String?                       @db.VarChar(80)
+  complianceStatus        String                        @default("COMPLIANT") @db.VarChar(50)
+  complianceReason        String?                       @db.Text
+  complianceDeactivatedAt DateTime?
+  complianceGraceEndsAt   DateTime?
+  complianceReactivatedAt DateTime?
+  admissions              Admission[]
+  appointments            Appointment[]
+  auditLogs               AuditLog[]
+  beds                    Bed[]
+  branchMedicineStocks    BranchMedicineStock[]
+  branches                Branch[]
+  clinics                 Clinic[]
+  consultations           Consultation[]
+  departments             Department[]
+  dispenses               Dispense[]
+  subscriptionPayments    FacilitySubscriptionPayment[]
+  invoices                Invoice[]
+  labOrders               LabOrder[]
+  notifications           Notification[]
+  otcSalePayments         OtcSalePayment[]
+  otcSales                OtcSale[]
+  patients                Patient[]
+  payments                Payment[]
+  pharmacyStockMovements  PharmacyStockMovement[]
+  prescriptions           Prescription[]
+  serviceTariffs          ServiceTariff[]
+  shaClaims               ShaClaim[]
+  staff                   Staff[]
+  triages                 Triage[]
+  userBranchAccesses      UserBranchAccess[]
+  userFeedback            UserFeedback[]
+  homeUsers               User[]                        @relation("UserHomeFacility")
+  wards                   Ward[]
+
+  @@index([latitude, longitude])
+  @@index([complianceStatus])
+  @@index([complianceGraceEndsAt])
+  @@map("facilities")
+}
+
+model Branch {
+  id                     Int                     @id @default(autoincrement())
+  code                   String                  @unique @db.VarChar(50)
+  name                   String                  @db.VarChar(150)
+  facilityId             Int
+  county                 String?                 @db.VarChar(120)
+  town                   String?                 @db.VarChar(120)
+  country                String?                 @db.VarChar(120)
+  phone                  String?                 @db.VarChar(50)
+  email                  String?                 @db.VarChar(255)
+  address                String?                 @db.VarChar(255)
+  postalAddress          String?                 @db.VarChar(255)
+  timezone               String?                 @db.VarChar(100)
+  currency               String?                 @db.VarChar(20)
+  mpesaShortcode         String?                 @db.VarChar(50)
+  mpesaPaybill           String?                 @db.VarChar(50)
+  mpesaTillNumber        String?                 @db.VarChar(50)
+  isDefault              Boolean                 @default(false)
+  isActive               Boolean                 @default(true)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  mpesaAccountNumber     String?                 @db.VarChar(80)
+  mpesaPochiNumber       String?                 @db.VarChar(80)
+  latitude               Float?
+  longitude              Float?
+  mapLocationLabel       String?                 @db.VarChar(255)
+  googleMapsUrl          String?                 @db.VarChar(500)
+  admissions             Admission[]
+  appointments           Appointment[]
+  auditLogs              AuditLog[]
+  beds                   Bed[]
+  branchMedicineStocks   BranchMedicineStock[]
+  facility               Facility                @relation(fields: [facilityId], references: [id])
+  clinics                Clinic[]
+  consultations          Consultation[]
+  departments            Department[]
+  dispenses              Dispense[]
+  invoices               Invoice[]
+  labOrders              LabOrder[]
+  notifications          Notification[]
+  otcSalePayments        OtcSalePayment[]
+  otcSales               OtcSale[]
+  payments               Payment[]
+  pharmacyStockMovements PharmacyStockMovement[]
+  prescriptions          Prescription[]
+  serviceTariffs         ServiceTariff[]
+  shaClaims              ShaClaim[]
+  staffMembers           Staff[]
+  triages                Triage[]
+  userAccesses           UserBranchAccess[]
+  userFeedback           UserFeedback[]
+  users                  User[]
+  wards                  Ward[]
+
+  @@index([facilityId])
+  @@index([latitude, longitude])
+  @@map("branches")
+}
+
+model Department {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique @db.VarChar(50)
+  name       String   @db.VarChar(150)
+  facilityId Int
+  branchId   Int?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  clinics    Clinic[]
+  branch     Branch?  @relation(fields: [branchId], references: [id])
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  staff      Staff[]
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@map("departments")
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(255)
+  isSystem    Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  staff       Staff[]
+  users       User[]
+
+  @@map("roles")
+}
+
+model User {
+  id                               Int                   @id @default(autoincrement())
+  username                         String                @unique @db.VarChar(50)
+  email                            String?               @unique @db.VarChar(255)
+  passwordHash                     String                @db.VarChar(255)
+  fullName                         String?               @db.VarChar(150)
+  isActive                         Boolean               @default(true)
+  canAccessAllBranchesInFacility   Boolean               @default(false)
+  lastLoginAt                      DateTime?
+  createdAt                        DateTime              @default(now())
+  updatedAt                        DateTime              @updatedAt
+  roleId                           Int
+  homeFacilityId                   Int?
+  homeBranchId                     Int?
+  failedLoginAttempts              Int                   @default(0)
+  lockedAt                         DateTime?
+  lockReason                       String?               @db.VarChar(255)
+  sessionVersion                   Int                   @default(0)
+  pendingDeactivationAt            DateTime?
+  pendingDeactivationRequestedById Int?
+  pendingDeactivationReason        String?               @db.VarChar(255)
+  auditLogs                        AuditLog[]            @relation("AuditActorUser")
+  resolvedNotifications            Notification[]        @relation("NotificationResolvedByUser")
+  notifications                    Notification[]        @relation("NotificationTargetUser")
+  passwordResetTokens              PasswordResetToken[]
+  patientPortalProfile             Patient?              @relation("PatientPortalUser")
+  staff                            Staff?
+  branchAccesses                   UserBranchAccess[]
+  createdFeedback                  UserFeedback[]        @relation("FeedbackCreatedByUser")
+  repliedFeedback                  UserFeedback[]        @relation("FeedbackRepliedByUser")
+  locationEvents                   UserLocationEvent[]
+  locationProfiles                 UserLocationProfile[]
+  reviews                          UserReview?
+  sessions                         UserSession[]
+  homeBranch                       Branch?               @relation(fields: [homeBranchId], references: [id])
+  homeFacility                     Facility?             @relation("UserHomeFacility", fields: [homeFacilityId], references: [id])
+  role                             Role                  @relation(fields: [roleId], references: [id])
+
+  @@index([roleId])
+  @@index([homeFacilityId])
+  @@index([homeBranchId])
+  @@index([lockedAt])
+  @@index([pendingDeactivationAt])
+  @@map("users")
+}
+
+model UserBranchAccess {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  facilityId Int
+  branchId   Int
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  branch     Branch   @relation(fields: [branchId], references: [id])
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, branchId])
+  @@index([userId])
+  @@index([facilityId])
+  @@index([branchId])
+  @@map("user_branch_access")
+}
+
+model Staff {
+  id                          Int                     @id @default(autoincrement())
+  staffCode                   String                  @unique @db.VarChar(50)
+  firstName                   String                  @db.VarChar(100)
+  lastName                    String                  @db.VarChar(100)
+  email                       String?                 @unique @db.VarChar(255)
+  phone                       String?                 @db.VarChar(30)
+  gender                      String?                 @db.VarChar(20)
+  designation                 String?                 @db.VarChar(150)
+  isClinician                 Boolean                 @default(false)
+  isPrescriber                Boolean                 @default(false)
+  canLogin                    Boolean                 @default(true)
+  isActive                    Boolean                 @default(true)
+  createdAt                   DateTime                @default(now())
+  updatedAt                   DateTime                @updatedAt
+  facilityId                  Int
+  branchId                    Int?
+  departmentId                Int?
+  roleId                      Int
+  userId                      Int?                    @unique
+  nationalIdNumber            String?                 @db.VarChar(80)
+  nationalIdImageUrl          String?                 @db.Text
+  passportPhotoUrl            String?                 @db.Text
+  clinicianRegistrationNumber String?                 @db.VarChar(120)
+  clinicianBoard              String?                 @db.VarChar(160)
+  admissions                  Admission[]             @relation("AdmittedByStaff")
+  appointments                Appointment[]           @relation("AppointmentDoctor")
+  auditLogs                   AuditLog[]              @relation("AuditActorStaff")
+  consultations               Consultation[]
+  dispenses                   Dispense[]              @relation("DispensedByStaff")
+  updatedInvoiceItems         InvoiceItem[]           @relation("InvoiceItemUpdatedBy")
+  createdInvoices             Invoice[]               @relation("InvoiceCreatedByStaff")
+  ipdDischargeSummaries       IpdDischargeSummary[]   @relation("IpdDischargedBy")
+  ipdDoctorReviews            IpdDoctorReview[]       @relation("IpdDoctorReviewedBy")
+  ipdProgressNotes            IpdProgressNote[]       @relation("IpdProgressRecordedBy")
+  ipdVitalRecords             IpdVitalRecord[]        @relation("IpdVitalRecordedBy")
+  labOrders                   LabOrder[]              @relation("LabRequestedBy")
+  resolvedNotifications       Notification[]          @relation("NotificationResolvedByStaff")
+  notifications               Notification[]          @relation("NotificationTargetStaff")
+  otcSalePayments             OtcSalePayment[]        @relation("OtcSalePaymentReceivedByStaff")
+  createdOtcSales             OtcSale[]               @relation("OtcSaleCreatedByStaff")
+  receivedPayments            Payment[]               @relation("PaymentReceivedByStaff")
+  otcStockMovements           PharmacyStockMovement[] @relation("PharmacyStockMovementStaff")
+  prescriptions               Prescription[]          @relation("PrescribedByStaff")
+  shaClaims                   ShaClaim[]              @relation("ShaClaimCreatedBy")
+  branch                      Branch?                 @relation(fields: [branchId], references: [id])
+  department                  Department?             @relation(fields: [departmentId], references: [id])
+  facility                    Facility                @relation(fields: [facilityId], references: [id])
+  role                        Role                    @relation(fields: [roleId], references: [id])
+  user                        User?                   @relation(fields: [userId], references: [id])
+  administeredTreatments      TreatmentChartEntry[]   @relation("TreatmentAdministeredBy")
+  orderedTreatments           TreatmentChartEntry[]   @relation("TreatmentOrderedBy")
+  performedTriages            Triage[]                @relation("TriagePerformedBy")
+  triageDoctorRoutes          Triage[]                @relation("TriageRoutedDoctor")
+  createdFeedback             UserFeedback[]          @relation("FeedbackCreatedByStaff")
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([departmentId])
+  @@index([roleId])
+  @@index([nationalIdNumber])
+  @@index([clinicianBoard])
+  @@map("staff_members")
+}
+
+model Patient {
+  id             Int            @id @default(autoincrement())
+  patientNumber  String         @unique @db.VarChar(50)
+  firstName      String         @db.VarChar(100)
+  middleName     String?        @db.VarChar(100)
+  lastName       String         @db.VarChar(100)
+  gender         String?        @db.VarChar(20)
+  dateOfBirth    DateTime?
+  phonePrimary   String?        @db.VarChar(30)
+  phoneSecondary String?        @db.VarChar(30)
+  email          String?        @db.VarChar(255)
+  occupation     String?        @db.VarChar(120)
+  isDeceased     Boolean        @default(false)
+  isActive       Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  facilityId     Int
+  portalUserId   Int?           @unique
+  admissions     Admission[]
+  appointments   Appointment[]
+  consultations  Consultation[]
+  dispenses      Dispense[]
+  invoices       Invoice[]
+  labOrders      LabOrder[]
+  otcSales       OtcSale[]
+  facility       Facility       @relation(fields: [facilityId], references: [id])
+  portalUser     User?          @relation("PatientPortalUser", fields: [portalUserId], references: [id])
+  prescriptions  Prescription[]
+  shaClaims      ShaClaim[]
+  triages        Triage[]
+
+  @@index([facilityId])
+  @@index([phonePrimary])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([portalUserId])
+  @@index([facilityId, createdAt], map: "patients_facility_createdAt_idx")
+  @@index([facilityId, patientNumber], map: "patients_facility_patientNumber_idx")
+  @@index([facilityId, phonePrimary], map: "patients_facility_phonePrimary_idx")
+  @@map("patients")
+}
+
+model Clinic {
+  id                  Int           @id @default(autoincrement())
+  code                String        @unique @db.VarChar(50)
+  name                String        @db.VarChar(150)
+  clinicType          String        @db.VarChar(50)
+  roomLocation        String?       @db.VarChar(150)
+  phoneExtension      String?       @db.VarChar(30)
+  consultationMinutes Int           @default(15)
+  maxDailyCapacity    Int           @default(20)
+  serviceStartTime    String?       @db.VarChar(20)
+  serviceEndTime      String?       @db.VarChar(20)
+  isWalkInAllowed     Boolean       @default(true)
+  isReferralRequired  Boolean       @default(false)
+  isActive            Boolean       @default(true)
+  notes               String?       @db.Text
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  facilityId          Int
+  branchId            Int?
+  departmentId        Int
+  appointments        Appointment[]
+  branch              Branch?       @relation(fields: [branchId], references: [id])
+  department          Department    @relation(fields: [departmentId], references: [id])
+  facility            Facility      @relation(fields: [facilityId], references: [id])
+  triages             Triage[]
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([departmentId])
+  @@map("clinics")
+}
+
+model Appointment {
+  id                Int           @id @default(autoincrement())
+  appointmentNumber String        @unique @db.VarChar(50)
+  appointmentDate   DateTime
+  startTime         String?       @db.VarChar(20)
+  endTime           String?       @db.VarChar(20)
+  visitReason       String?       @db.Text
+  statusCode        String        @db.VarChar(50)
+  triagePriority    String?       @db.VarChar(30)
+  checkedInAt       DateTime?
+  startedAt         DateTime?
+  completedAt       DateTime?
+  notes             String?       @db.Text
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  facilityId        Int
+  branchId          Int?
+  patientId         Int
+  doctorId          Int?
+  clinicId          Int?
+  admissions        Admission[]
+  branch            Branch?       @relation(fields: [branchId], references: [id])
+  clinic            Clinic?       @relation(fields: [clinicId], references: [id])
+  doctor            Staff?        @relation("AppointmentDoctor", fields: [doctorId], references: [id])
+  facility          Facility      @relation(fields: [facilityId], references: [id])
+  patient           Patient       @relation(fields: [patientId], references: [id])
+  consultation      Consultation?
+  invoices          Invoice[]
+  labOrders         LabOrder[]
+  triages           Triage?
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([patientId])
+  @@index([doctorId])
+  @@index([clinicId])
+  @@index([statusCode])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([appointmentDate])
+  @@index([doctorId, appointmentDate, statusCode], map: "appointments_doctor_date_status_idx")
+  @@index([facilityId, branchId, appointmentDate, statusCode], map: "appointments_facility_branch_date_status_idx")
+  @@map("appointments")
+}
+
+model Triage {
+  id                 Int          @id @default(autoincrement())
+  triageNumber       String       @unique @db.VarChar(50)
+  arrivalType        String?      @db.VarChar(30)
+  chiefComplaint     String?      @db.Text
+  temperatureC       Float?
+  systolicBp         Int?
+  diastolicBp        Int?
+  pulseRate          Int?
+  respiratoryRate    Int?
+  oxygenSaturation   Float?
+  weightKg           Float?
+  heightCm           Float?
+  bmi                Float?
+  painScore          Int?
+  triagePriority     String?      @db.VarChar(30)
+  statusCode         String       @default("WAITING_TRIAGE") @db.VarChar(50)
+  arrivedAt          DateTime     @default(now())
+  startedAt          DateTime?
+  completedAt        DateTime?
+  notes              String?      @db.Text
+  facilityId         Int
+  branchId           Int?
+  patientId          Int
+  clinicId           Int?
+  appointmentId      Int?         @unique
+  performedByStaffId Int?
+  routedDoctorId     Int?
+  appointment        Appointment? @relation(fields: [appointmentId], references: [id])
+  branch             Branch?      @relation(fields: [branchId], references: [id])
+  clinic             Clinic?      @relation(fields: [clinicId], references: [id])
+  facility           Facility     @relation(fields: [facilityId], references: [id])
+  patient            Patient      @relation(fields: [patientId], references: [id])
+  performedBy        Staff?       @relation("TriagePerformedBy", fields: [performedByStaffId], references: [id])
+  routedDoctor       Staff?       @relation("TriageRoutedDoctor", fields: [routedDoctorId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([patientId])
+  @@index([clinicId])
+  @@index([appointmentId])
+  @@index([performedByStaffId])
+  @@index([routedDoctorId])
+  @@index([statusCode])
+  @@index([triagePriority])
+  @@index([arrivedAt])
+  @@map("triage_records")
+}
+
+model Consultation {
+  id                  Int            @id @default(autoincrement())
+  consultationNumber  String         @unique @db.VarChar(50)
+  chiefComplaint      String?        @db.Text
+  historyOfPresenting String?        @db.Text
+  examinationFindings String?        @db.Text
+  diagnosis           String?        @db.Text
+  treatmentPlan       String?        @db.Text
+  notes               String?        @db.Text
+  statusCode          String         @default("IN_PROGRESS") @db.VarChar(50)
+  startedAt           DateTime       @default(now())
+  completedAt         DateTime?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  facilityId          Int
+  branchId            Int?
+  appointmentId       Int            @unique
+  patientId           Int
+  doctorId            Int
+  admissions          Admission[]
+  appointment         Appointment    @relation(fields: [appointmentId], references: [id])
+  branch              Branch?        @relation(fields: [branchId], references: [id])
+  doctor              Staff          @relation(fields: [doctorId], references: [id])
+  facility            Facility       @relation(fields: [facilityId], references: [id])
+  patient             Patient        @relation(fields: [patientId], references: [id])
+  invoices            Invoice[]
+  prescriptions       Prescription[]
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([patientId])
+  @@index([doctorId])
+  @@index([statusCode])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([facilityId, branchId, statusCode, startedAt])
+  @@index([doctorId, statusCode, startedAt])
+  @@map("consultations")
+}
+
+model LabTestCatalog {
+  id             Int             @id @default(autoincrement())
+  testName       String          @db.VarChar(150)
+  category       String?         @db.VarChar(100)
+  specimenType   String?         @db.VarChar(100)
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  orderItems     LabOrderItem[]
+  serviceTariffs ServiceTariff[]
+
+  @@index([testName])
+  @@index([category])
+  @@index([isActive])
+  @@index([createdAt])
+  @@map("lab_test_catalog")
+}
+
+model LabOrder {
+  id                 Int            @id @default(autoincrement())
+  orderNumber        String         @unique @db.VarChar(50)
+  clinicalNotes      String?        @db.Text
+  urgency            String?        @db.VarChar(50)
+  status             String         @default("REQUESTED") @db.VarChar(50)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  facilityId         Int
+  branchId           Int?
+  patientId          Int
+  appointmentId      Int?
+  admissionId        Int?
+  encounterRef       String?        @db.VarChar(100)
+  requestedByStaffId Int?
+  items              LabOrderItem[]
+  admission          Admission?     @relation(fields: [admissionId], references: [id])
+  appointment        Appointment?   @relation(fields: [appointmentId], references: [id])
+  branch             Branch?        @relation(fields: [branchId], references: [id])
+  facility           Facility       @relation(fields: [facilityId], references: [id])
+  patient            Patient        @relation(fields: [patientId], references: [id])
+  requestedBy        Staff?         @relation("LabRequestedBy", fields: [requestedByStaffId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([patientId])
+  @@index([appointmentId])
+  @@index([admissionId])
+  @@index([requestedByStaffId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([facilityId, branchId, status, createdAt], map: "lab_orders_facility_branch_status_created_idx")
+  @@map("lab_orders")
+}
+
+model LabOrderItem {
+  id           Int            @id @default(autoincrement())
+  instructions String?        @db.Text
+  status       String         @default("PENDING") @db.VarChar(50)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  orderId      Int
+  testId       Int
+  order        LabOrder       @relation(fields: [orderId], references: [id])
+  test         LabTestCatalog @relation(fields: [testId], references: [id])
+  results      LabResult[]
+
+  @@index([orderId])
+  @@index([testId])
+  @@map("lab_order_items")
+}
+
+model LabResult {
+  id                 Int          @id @default(autoincrement())
+  resultValue        String       @db.Text
+  remarks            String?      @db.Text
+  recordedBy         Int?
+  recordedAt         DateTime     @default(now())
+  orderItemId        Int
+  attachmentFileName String?      @db.VarChar(255)
+  attachmentMimeType String?      @db.VarChar(120)
+  attachmentDataUrl  String?      @db.Text
+  orderItem          LabOrderItem @relation(fields: [orderItemId], references: [id])
+
+  @@index([orderItemId])
+  @@index([recordedAt])
+  @@index([recordedBy])
+  @@map("lab_results")
+}
+
+model Medicine {
+  id                Int                     @id @default(autoincrement())
+  code              String                  @unique @db.VarChar(50)
+  name              String                  @db.VarChar(150)
+  dosageForm        String?                 @db.VarChar(100)
+  strength          String?                 @db.VarChar(100)
+  manufacturer      String?                 @db.VarChar(150)
+  unitPrice         Float?                  @default(0)
+  stockQuantity     Int                     @default(0)
+  reorderLevel      Int                     @default(0)
+  isActive          Boolean                 @default(true)
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  branchStocks      BranchMedicineStock[]
+  dispenseItems     DispenseItem[]
+  otcSaleItems      OtcSaleItem[]
+  stockMovements    PharmacyStockMovement[]
+  prescriptionItems PrescriptionItem[]
+
+  @@index([name])
+  @@index([isActive])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@map("medicines")
+}
+
+model Prescription {
+  id                  Int                @id @default(autoincrement())
+  prescriptionNumber  String             @unique @db.VarChar(50)
+  notes               String?            @db.Text
+  statusCode          String             @default("PRESCRIBED") @db.VarChar(50)
+  prescribedAt        DateTime           @default(now())
+  dispensedAt         DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  facilityId          Int
+  branchId            Int?
+  consultationId      Int
+  patientId           Int
+  prescribedByStaffId Int
+  dispenses           Dispense[]
+  items               PrescriptionItem[]
+  branch              Branch?            @relation(fields: [branchId], references: [id])
+  consultation        Consultation       @relation(fields: [consultationId], references: [id])
+  facility            Facility           @relation(fields: [facilityId], references: [id])
+  patient             Patient            @relation(fields: [patientId], references: [id])
+  prescribedBy        Staff              @relation("PrescribedByStaff", fields: [prescribedByStaffId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([consultationId])
+  @@index([patientId])
+  @@index([prescribedByStaffId])
+  @@index([statusCode])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([facilityId, branchId, statusCode, createdAt], map: "prescriptions_facility_branch_status_created_idx")
+  @@map("prescriptions")
+}
+
+model PrescriptionItem {
+  id                               Int            @id @default(autoincrement())
+  dosage                           String?        @db.VarChar(100)
+  frequency                        String?        @db.VarChar(100)
+  duration                         String?        @db.VarChar(100)
+  quantity                         Int            @default(1)
+  instructions                     String?        @db.Text
+  statusCode                       String         @default("PRESCRIBED") @db.VarChar(50)
+  createdAt                        DateTime       @default(now())
+  updatedAt                        DateTime       @updatedAt
+  prescriptionId                   Int
+  medicineId                       Int
+  route                            String?        @db.VarChar(100)
+  medicineNameSnapshot             String?        @db.VarChar(180)
+  stockStatusAtPrescribing         String?        @db.VarChar(50)
+  acceptedAlternativeForMedicineId Int?
+  dispenseItems                    DispenseItem[]
+  medicine                         Medicine       @relation(fields: [medicineId], references: [id])
+  prescription                     Prescription   @relation(fields: [prescriptionId], references: [id])
+
+  @@index([prescriptionId])
+  @@index([medicineId])
+  @@index([acceptedAlternativeForMedicineId])
+  @@index([statusCode])
+  @@map("prescription_items")
+}
+
+model Dispense {
+  id                 Int            @id @default(autoincrement())
+  dispenseNumber     String         @unique @db.VarChar(50)
+  prescriptionId     Int
+  patientId          Int
+  facilityId         Int
+  branchId           Int?
+  dispensedByStaffId Int?
+  statusCode         String         @default("DISPENSED") @db.VarChar(50)
+  notes              String?        @db.Text
+  dispensedAt        DateTime       @default(now())
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  items              DispenseItem[]
+  branch             Branch?        @relation(fields: [branchId], references: [id])
+  dispensedBy        Staff?         @relation("DispensedByStaff", fields: [dispensedByStaffId], references: [id])
+  facility           Facility       @relation(fields: [facilityId], references: [id])
+  patient            Patient        @relation(fields: [patientId], references: [id])
+  prescription       Prescription   @relation(fields: [prescriptionId], references: [id])
+
+  @@index([prescriptionId])
+  @@index([patientId])
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([dispensedByStaffId])
+  @@index([dispensedAt])
+  @@map("dispenses")
+}
+
+model DispenseItem {
+  id                 Int              @id @default(autoincrement())
+  dispenseId         Int
+  prescriptionItemId Int
+  medicineId         Int
+  quantityPrescribed Int              @default(0)
+  quantityDispensed  Int              @default(0)
+  unitPrice          Float            @default(0)
+  lineTotal          Float            @default(0)
+  notes              String?          @db.Text
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  dispense           Dispense         @relation(fields: [dispenseId], references: [id])
+  medicine           Medicine         @relation(fields: [medicineId], references: [id])
+  prescriptionItem   PrescriptionItem @relation(fields: [prescriptionItemId], references: [id])
+
+  @@index([dispenseId])
+  @@index([prescriptionItemId])
+  @@index([medicineId])
+  @@map("dispense_items")
+}
+
+model Ward {
+  id             Int             @id @default(autoincrement())
+  code           String          @unique @db.VarChar(50)
+  name           String          @db.VarChar(150)
+  wardType       String?         @db.VarChar(100)
+  capacity       Int             @default(0)
+  facilityId     Int?
+  branchId       Int?
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  admissions     Admission[]
+  beds           Bed[]
+  serviceTariffs ServiceTariff[]
+  branch         Branch?         @relation(fields: [branchId], references: [id])
+  facility       Facility?       @relation(fields: [facilityId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@map("wards")
+}
+
+model Bed {
+  id             Int             @id @default(autoincrement())
+  bedNumber      String          @unique @db.VarChar(50)
+  bedLabel       String?         @db.VarChar(100)
+  statusCode     String          @default("AVAILABLE") @db.VarChar(50)
+  facilityId     Int?
+  branchId       Int?
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  wardId         Int
+  admissions     Admission[]
+  branch         Branch?         @relation(fields: [branchId], references: [id])
+  facility       Facility?       @relation(fields: [facilityId], references: [id])
+  ward           Ward            @relation(fields: [wardId], references: [id])
+  serviceTariffs ServiceTariff[]
+
+  @@index([wardId])
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([statusCode])
+  @@map("beds")
+}
+
+model Admission {
+  id                  Int                   @id @default(autoincrement())
+  admissionNumber     String                @unique @db.VarChar(50)
+  admissionReason     String?               @db.Text
+  admissionSource     String?               @db.VarChar(100)
+  statusCode          String                @default("ADMITTED") @db.VarChar(50)
+  admittedAt          DateTime              @default(now())
+  dischargedAt        DateTime?
+  expectedDischargeAt DateTime?
+  notes               String?               @db.Text
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  facilityId          Int
+  branchId            Int?
+  patientId           Int
+  appointmentId       Int?
+  consultationId      Int?
+  admittedByStaffId   Int?
+  wardId              Int
+  bedId               Int?
+  admittedBy          Staff?                @relation("AdmittedByStaff", fields: [admittedByStaffId], references: [id])
+  appointment         Appointment?          @relation(fields: [appointmentId], references: [id])
+  bed                 Bed?                  @relation(fields: [bedId], references: [id])
+  branch              Branch?               @relation(fields: [branchId], references: [id])
+  consultation        Consultation?         @relation(fields: [consultationId], references: [id])
+  facility            Facility              @relation(fields: [facilityId], references: [id])
+  patient             Patient               @relation(fields: [patientId], references: [id])
+  ward                Ward                  @relation(fields: [wardId], references: [id])
+  invoices            Invoice[]
+  dischargeSummary    IpdDischargeSummary?
+  doctorReviews       IpdDoctorReview[]
+  progressNotes       IpdProgressNote[]
+  vitalRecords        IpdVitalRecord[]
+  labOrders           LabOrder[]
+  treatmentChart      TreatmentChartEntry[]
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([patientId])
+  @@index([appointmentId])
+  @@index([consultationId])
+  @@index([admittedByStaffId])
+  @@index([wardId])
+  @@index([bedId])
+  @@index([statusCode])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([admittedAt])
+  @@index([facilityId, branchId, statusCode, createdAt], map: "admissions_facility_branch_status_created_idx")
+  @@map("admissions")
+}
+
+model IpdProgressNote {
+  id                Int       @id @default(autoincrement())
+  noteType          String?   @db.VarChar(100)
+  noteText          String    @db.Text
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  admissionId       Int
+  recordedByStaffId Int?
+  admission         Admission @relation(fields: [admissionId], references: [id])
+  recordedBy        Staff?    @relation("IpdProgressRecordedBy", fields: [recordedByStaffId], references: [id])
+
+  @@index([admissionId])
+  @@index([recordedByStaffId])
+  @@map("ipd_progress_notes")
+}
+
+model IpdVitalRecord {
+  id                Int       @id @default(autoincrement())
+  admissionId       Int
+  recordedByStaffId Int?
+  recordedAt        DateTime  @default(now())
+  temperatureC      Float?
+  systolicBp        Int?
+  diastolicBp       Int?
+  pulseRate         Int?
+  respiratoryRate   Int?
+  oxygenSaturation  Float?
+  weightKg          Float?
+  heightCm          Float?
+  bmi               Float?
+  painScore         Int?
+  notes             String?   @db.Text
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  admission         Admission @relation(fields: [admissionId], references: [id])
+  recordedBy        Staff?    @relation("IpdVitalRecordedBy", fields: [recordedByStaffId], references: [id])
+
+  @@index([admissionId])
+  @@index([recordedByStaffId])
+  @@index([recordedAt])
+  @@map("ipd_vital_records")
+}
+
+model IpdDoctorReview {
+  id                Int       @id @default(autoincrement())
+  admissionId       Int
+  reviewedByStaffId Int?
+  reviewDate        DateTime  @default(now())
+  chiefComplaint    String?   @db.Text
+  subjective        String?   @db.Text
+  objective         String?   @db.Text
+  assessment        String?   @db.Text
+  plan              String?   @db.Text
+  reviewNotes       String?   @db.Text
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  admission         Admission @relation(fields: [admissionId], references: [id])
+  reviewedBy        Staff?    @relation("IpdDoctorReviewedBy", fields: [reviewedByStaffId], references: [id])
+
+  @@index([admissionId])
+  @@index([reviewedByStaffId])
+  @@index([reviewDate])
+  @@map("ipd_doctor_reviews")
+}
+
+model TreatmentChartEntry {
+  id                    Int       @id @default(autoincrement())
+  treatmentType         String?   @db.VarChar(100)
+  treatmentName         String    @db.VarChar(150)
+  dosage                String?   @db.VarChar(100)
+  route                 String?   @db.VarChar(100)
+  frequency             String?   @db.VarChar(100)
+  statusCode            String    @default("PLANNED") @db.VarChar(50)
+  scheduledAt           DateTime?
+  administeredAt        DateTime?
+  notes                 String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  admissionId           Int
+  orderedByStaffId      Int?
+  administeredByStaffId Int?
+  administeredBy        Staff?    @relation("TreatmentAdministeredBy", fields: [administeredByStaffId], references: [id])
+  admission             Admission @relation(fields: [admissionId], references: [id])
+  orderedBy             Staff?    @relation("TreatmentOrderedBy", fields: [orderedByStaffId], references: [id])
+
+  @@index([admissionId])
+  @@index([orderedByStaffId])
+  @@index([administeredByStaffId])
+  @@index([statusCode])
+  @@map("treatment_chart_entries")
+}
+
+model IpdDischargeSummary {
+  id                   Int       @id @default(autoincrement())
+  admissionId          Int       @unique
+  dischargeDiagnosis   String    @db.Text
+  hospitalCourse       String    @db.Text
+  conditionOnDischarge String    @db.Text
+  dischargeMedications String?   @db.Text
+  followUpInstructions String?   @db.Text
+  dischargedByStaffId  Int?
+  dischargeDate        DateTime  @default(now())
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  admission            Admission @relation(fields: [admissionId], references: [id])
+  dischargedBy         Staff?    @relation("IpdDischargedBy", fields: [dischargedByStaffId], references: [id])
+
+  @@index([dischargedByStaffId])
+  @@index([dischargeDate])
+  @@map("ipd_discharge_summaries")
+}
+
+model BillingService {
+  id             Int             @id @default(autoincrement())
+  code           String          @unique @db.VarChar(50)
+  name           String          @db.VarChar(150)
+  category       String?         @db.VarChar(100)
+  defaultPrice   Float           @default(0)
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  invoiceItems   InvoiceItem[]
+  serviceTariffs ServiceTariff[]
+
+  @@index([name])
+  @@index([category])
+  @@index([isActive])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@map("billing_services")
+}
+
+model ServiceTariff {
+  id               Int             @id @default(autoincrement())
+  code             String          @db.VarChar(80)
+  name             String          @db.VarChar(150)
+  category         String          @db.VarChar(80)
+  unitPrice        Float           @default(0)
+  isActive         Boolean         @default(true)
+  notes            String?         @db.Text
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  facilityId       Int
+  branchId         Int?
+  billingServiceId Int?
+  labTestId        Int?
+  wardId           Int?
+  bedId            Int?
+  bed              Bed?            @relation(fields: [bedId], references: [id])
+  billingService   BillingService? @relation(fields: [billingServiceId], references: [id])
+  branch           Branch?         @relation(fields: [branchId], references: [id])
+  facility         Facility        @relation(fields: [facilityId], references: [id])
+  labTest          LabTestCatalog? @relation(fields: [labTestId], references: [id])
+  ward             Ward?           @relation(fields: [wardId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([category])
+  @@index([code])
+  @@index([name])
+  @@index([isActive])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([billingServiceId])
+  @@index([labTestId])
+  @@index([wardId])
+  @@index([bedId])
+  @@index([facilityId, branchId, category, name])
+  @@index([facilityId, branchId, isActive])
+  @@map("service_tariffs")
+}
+
+model Invoice {
+  id               Int            @id @default(autoincrement())
+  invoiceNumber    String         @unique @db.VarChar(50)
+  statusCode       String         @default("PENDING") @db.VarChar(50)
+  subtotal         Float          @default(0)
+  discountAmount   Float          @default(0)
+  taxAmount        Float          @default(0)
+  totalAmount      Float          @default(0)
+  paidAmount       Float          @default(0)
+  balanceAmount    Float          @default(0)
+  notes            String?        @db.Text
+  issuedAt         DateTime       @default(now())
+  settledAt        DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  facilityId       Int
+  branchId         Int?
+  patientId        Int
+  appointmentId    Int?
+  consultationId   Int?
+  admissionId      Int?
+  createdByStaffId Int?
+  etimsInvoices    EtimsInvoice[]
+  items            InvoiceItem[]
+  admission        Admission?     @relation(fields: [admissionId], references: [id])
+  appointment      Appointment?   @relation(fields: [appointmentId], references: [id])
+  branch           Branch?        @relation(fields: [branchId], references: [id])
+  consultation     Consultation?  @relation(fields: [consultationId], references: [id])
+  createdBy        Staff?         @relation("InvoiceCreatedByStaff", fields: [createdByStaffId], references: [id])
+  facility         Facility       @relation(fields: [facilityId], references: [id])
+  patient          Patient        @relation(fields: [patientId], references: [id])
+  payments         Payment[]
+  shaClaims        ShaClaim[]
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([patientId])
+  @@index([appointmentId])
+  @@index([consultationId])
+  @@index([admissionId])
+  @@index([createdByStaffId])
+  @@index([statusCode])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([issuedAt])
+  @@index([facilityId, branchId, statusCode], map: "invoices_facility_branch_status_idx")
+  @@index([facilityId, createdAt], map: "invoices_facility_createdAt_idx")
+  @@index([facilityId, patientId], map: "invoices_facility_patient_idx")
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id               Int             @id @default(autoincrement())
+  description      String          @db.VarChar(255)
+  quantity         Int             @default(1)
+  unitPrice        Float           @default(0)
+  lineTotal        Float           @default(0)
+  statusCode       String          @default("BILLED") @db.VarChar(50)
+  isAutoGenerated  Boolean         @default(false)
+  isRemoved        Boolean         @default(false)
+  removedAt        DateTime?
+  removedReason    String?         @db.Text
+  sourceModule     String?         @db.VarChar(100)
+  sourceEntityType String?         @db.VarChar(100)
+  sourceEntityId   String?         @db.VarChar(100)
+  updatedByStaffId Int?
+  notes            String?         @db.Text
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  invoiceId        Int
+  billingServiceId Int?
+  discountPercent  Float           @default(0)
+  discountAmount   Float           @default(0)
+  billingService   BillingService? @relation(fields: [billingServiceId], references: [id])
+  invoice          Invoice         @relation(fields: [invoiceId], references: [id])
+  updatedBy        Staff?          @relation("InvoiceItemUpdatedBy", fields: [updatedByStaffId], references: [id], map: "invoice_items_updatedBy_staff_fkey")
+
+  @@index([invoiceId])
+  @@index([billingServiceId])
+  @@index([statusCode])
+  @@index([updatedByStaffId], map: "invoice_items_updatedByStaffId_fkey")
+  @@map("invoice_items")
+}
+
+model Payment {
+  id                 Int       @id @default(autoincrement())
+  receiptNumber      String    @unique @db.VarChar(50)
+  amount             Float     @default(0)
+  paymentMethod      String    @db.VarChar(50)
+  statusCode         String    @default("PENDING") @db.VarChar(50)
+  phoneNumber        String?   @db.VarChar(30)
+  transactionRef     String?   @db.VarChar(100)
+  mpesaReceiptNumber String?   @db.VarChar(100)
+  merchantRequestId  String?   @db.VarChar(100)
+  checkoutRequestId  String?   @db.VarChar(100)
+  callbackPayload    String?   @db.Text
+  paidAt             DateTime?
+  requestedAt        DateTime  @default(now())
+  confirmedAt        DateTime?
+  notes              String?   @db.Text
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  facilityId         Int
+  branchId           Int?
+  invoiceId          Int
+  receivedByStaffId  Int?
+  shaClaimId         Int?
+  branch             Branch?   @relation(fields: [branchId], references: [id])
+  facility           Facility  @relation(fields: [facilityId], references: [id])
+  invoice            Invoice   @relation(fields: [invoiceId], references: [id])
+  receivedBy         Staff?    @relation("PaymentReceivedByStaff", fields: [receivedByStaffId], references: [id])
+  shaClaim           ShaClaim? @relation("ShaClaimPayments", fields: [shaClaimId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([invoiceId])
+  @@index([receivedByStaffId])
+  @@index([statusCode])
+  @@index([paymentMethod])
+  @@index([checkoutRequestId])
+  @@index([merchantRequestId])
+  @@index([mpesaReceiptNumber])
+  @@index([phoneNumber])
+  @@index([shaClaimId])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([requestedAt])
+  @@index([facilityId, branchId, statusCode], map: "payments_facility_branch_status_idx")
+  @@index([invoiceId, statusCode], map: "payments_invoice_status_idx")
+  @@map("payments")
+}
+
+model UserSession {
+  id           String    @id @db.VarChar(120)
+  userId       Int
+  ipAddress    String?   @db.VarChar(100)
+  userAgent    String?   @db.Text
+  createdAt    DateTime  @default(now())
+  lastSeenAt   DateTime  @default(now())
+  revokedAt    DateTime?
+  revokeReason String?   @db.VarChar(255)
+  user         User      @relation(fields: [userId], references: [id])
+
+  @@index([userId, revokedAt])
+  @@index([lastSeenAt])
+  @@map("user_sessions")
+}
+
+model UserReview {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  rating    Int
+  comment   String   @db.Text
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([rating])
+  @@index([isVisible, createdAt])
+  @@map("user_reviews")
+}
+
+model ShaClaim {
+  id                   Int       @id @default(autoincrement())
+  claimNumber          String    @unique @db.VarChar(80)
+  statusCode           String    @default("DRAFT") @db.VarChar(50)
+  fidCode              String?   @db.VarChar(120)
+  memberNumber         String?   @db.VarChar(120)
+  diagnosisCode        String?   @db.VarChar(80)
+  diagnosisText        String?   @db.VarChar(255)
+  servicePeriodStart   DateTime?
+  servicePeriodEnd     DateTime?
+  claimedAmount        Float     @default(0)
+  approvedAmount       Float     @default(0)
+  paidAmount           Float     @default(0)
+  rejectedAmount       Float     @default(0)
+  rejectionReason      String?   @db.Text
+  submittedAt          DateTime?
+  approvedAt           DateTime?
+  paidAt               DateTime?
+  notes                String?   @db.Text
+  metadata             Json?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  facilityId           Int
+  branchId             Int?
+  patientId            Int
+  invoiceId            Int?
+  createdByStaffId     Int?
+  patientSignatureUrl  String?   @db.Text
+  facilitySignatureUrl String?   @db.Text
+  rubberStampUrl       String?   @db.Text
+  payments             Payment[] @relation("ShaClaimPayments")
+  branch               Branch?   @relation(fields: [branchId], references: [id])
+  createdBy            Staff?    @relation("ShaClaimCreatedBy", fields: [createdByStaffId], references: [id], map: "sha_claims_createdBy_staff_fkey")
+  facility             Facility  @relation(fields: [facilityId], references: [id])
+  invoice              Invoice?  @relation(fields: [invoiceId], references: [id])
+  patient              Patient   @relation(fields: [patientId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([patientId])
+  @@index([invoiceId])
+  @@index([statusCode])
+  @@index([createdAt])
+  @@index([createdByStaffId], map: "sha_claims_createdByStaffId_fkey")
+  @@map("sha_claims")
+}
+
+model UserFeedback {
+  id               Int       @id @default(autoincrement())
+  subject          String    @db.VarChar(160)
+  message          String    @db.Text
+  isAnonymous      Boolean   @default(false)
+  statusCode       String    @default("OPEN") @db.VarChar(50)
+  replyText        String?   @db.Text
+  repliedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  facilityId       Int?
+  branchId         Int?
+  createdByUserId  Int?
+  createdByStaffId Int?
+  repliedByUserId  Int?
+  branch           Branch?   @relation(fields: [branchId], references: [id])
+  createdByStaff   Staff?    @relation("FeedbackCreatedByStaff", fields: [createdByStaffId], references: [id])
+  createdByUser    User?     @relation("FeedbackCreatedByUser", fields: [createdByUserId], references: [id])
+  facility         Facility? @relation(fields: [facilityId], references: [id])
+  repliedByUser    User?     @relation("FeedbackRepliedByUser", fields: [repliedByUserId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([createdByUserId])
+  @@index([createdByStaffId])
+  @@index([repliedByUserId])
+  @@index([statusCode])
+  @@index([createdAt])
+  @@map("user_feedback")
+}
+
+model FacilitySubscriptionPayment {
+  id               Int       @id @default(autoincrement())
+  paymentNumber    String    @unique @db.VarChar(80)
+  facilityId       Int
+  amount           Float     @default(0)
+  monthlyFee       Float     @default(5000)
+  monthsCovered    Float     @default(0)
+  paidFrom         DateTime?
+  paidThrough      DateTime?
+  paymentMethod    String?   @db.VarChar(50)
+  reference        String?   @db.VarChar(120)
+  notes            String?   @db.Text
+  recordedByUserId Int?
+  paidAt           DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  facility         Facility  @relation(fields: [facilityId], references: [id])
+
+  @@index([facilityId])
+  @@index([paidAt])
+  @@index([paidThrough])
+  @@map("facility_subscription_payments")
+}
+
+model AuditLog {
+  id           Int       @id @default(autoincrement())
+  moduleName   String    @db.VarChar(100)
+  actionName   String    @db.VarChar(100)
+  entityType   String?   @db.VarChar(100)
+  entityId     String?   @db.VarChar(100)
+  description  String?   @db.Text
+  facilityId   Int?
+  branchId     Int?
+  actorUserId  Int?
+  actorStaffId Int?
+  beforeData   String?   @db.Text
+  afterData    String?   @db.Text
+  ipAddress    String?   @db.VarChar(100)
+  userAgent    String?   @db.Text
+  createdAt    DateTime  @default(now())
+  actorStaff   Staff?    @relation("AuditActorStaff", fields: [actorStaffId], references: [id])
+  actorUser    User?     @relation("AuditActorUser", fields: [actorUserId], references: [id])
+  branch       Branch?   @relation(fields: [branchId], references: [id])
+  facility     Facility? @relation(fields: [facilityId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([moduleName])
+  @@index([actionName])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([actorUserId])
+  @@index([actorStaffId])
+  @@index([createdAt])
+  @@index([actorUserId, createdAt], map: "audit_logs_actor_user_created_idx")
+  @@index([facilityId, branchId, createdAt], map: "audit_logs_facility_branch_created_idx")
+  @@map("audit_logs")
+}
+
+model IpGeolocationCache {
+  id             Int       @id @default(autoincrement())
+  ipAddress      String    @unique @db.VarChar(100)
+  country        String?   @db.VarChar(120)
+  region         String?   @db.VarChar(120)
+  city           String?   @db.VarChar(120)
+  latitude       Float?
+  longitude      Float?
+  isp            String?   @db.VarChar(255)
+  org            String?   @db.VarChar(255)
+  timezone       String?   @db.VarChar(120)
+  confidence     Float?
+  source         String?   @db.VarChar(80)
+  rawResponse    Json?
+  lastLookedUpAt DateTime  @default(now())
+  expiresAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([expiresAt])
+  @@index([country])
+  @@index([city])
+  @@map("ip_geolocation_cache")
+}
+
+model UserLocationProfile {
+  id                Int       @id @default(autoincrement())
+  userId            Int?
+  sessionId         String    @unique @db.VarChar(120)
+  sessionVersion    Int?
+  isOnline          Boolean   @default(true)
+  loginAt           DateTime?
+  lastSeenAt        DateTime  @default(now())
+  loggedOutAt       DateTime?
+  lastRoute         String?   @db.VarChar(500)
+  lastMethod        String?   @db.VarChar(10)
+  lastStatusCode    Int?
+  ipAddress         String?   @db.VarChar(100)
+  userAgent         String?   @db.Text
+  country           String?   @db.VarChar(120)
+  region            String?   @db.VarChar(120)
+  city              String?   @db.VarChar(120)
+  latitude          Float?
+  longitude         Float?
+  accuracyMeters    Float?
+  isp               String?   @db.VarChar(255)
+  org               String?   @db.VarChar(255)
+  timezone          String?   @db.VarChar(120)
+  confidence        Float?
+  geolocationSource String?   @db.VarChar(80)
+  deviceType        String?   @db.VarChar(80)
+  browser           String?   @db.VarChar(120)
+  operatingSystem   String?   @db.VarChar(120)
+  eventCount        Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  user              User?     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([isOnline, lastSeenAt])
+  @@index([country])
+  @@index([city])
+  @@index([lastSeenAt])
+  @@map("user_location_profiles")
+}
+
+model UserLocationEvent {
+  id                Int      @id @default(autoincrement())
+  userId            Int?
+  sessionId         String   @db.VarChar(120)
+  eventType         String   @default("REQUEST") @db.VarChar(40)
+  route             String?  @db.VarChar(500)
+  method            String?  @db.VarChar(10)
+  statusCode        Int?
+  ipAddress         String?  @db.VarChar(100)
+  userAgent         String?  @db.Text
+  country           String?  @db.VarChar(120)
+  region            String?  @db.VarChar(120)
+  city              String?  @db.VarChar(120)
+  latitude          Float?
+  longitude         Float?
+  accuracyMeters    Float?
+  isp               String?  @db.VarChar(255)
+  org               String?  @db.VarChar(255)
+  timezone          String?  @db.VarChar(120)
+  confidence        Float?
+  geolocationSource String?  @db.VarChar(80)
+  deviceType        String?  @db.VarChar(80)
+  browser           String?  @db.VarChar(120)
+  operatingSystem   String?  @db.VarChar(120)
+  rawSnapshot       Json?
+  occurredAt        DateTime @default(now())
+  createdAt         DateTime @default(now())
+  user              User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId, occurredAt])
+  @@index([sessionId])
+  @@index([eventType])
+  @@index([country])
+  @@index([city])
+  @@index([occurredAt])
+  @@map("user_location_events")
+}
+
+model SystemSetting {
+  id           Int      @id @default(autoincrement())
+  settingKey   String   @unique @db.VarChar(100)
+  settingValue String   @db.Text
+  valueType    String?  @db.VarChar(50)
+  category     String?  @db.VarChar(100)
+  description  String?  @db.Text
+  isPublic     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([category])
+  @@index([isPublic])
+  @@map("system_settings")
+}
+
+model Notification {
+  id                Int       @id @default(autoincrement())
+  title             String    @db.VarChar(200)
+  message           String    @db.Text
+  notificationType  String?   @db.VarChar(50)
+  severity          String?   @db.VarChar(20)
+  moduleName        String?   @db.VarChar(100)
+  entityType        String?   @db.VarChar(100)
+  entityId          String?   @db.VarChar(100)
+  facilityId        Int?
+  branchId          Int?
+  targetUserId      Int?
+  targetStaffId     Int?
+  isRead            Boolean   @default(false)
+  readAt            DateTime?
+  isResolved        Boolean   @default(false)
+  resolvedAt        DateTime?
+  resolvedByUserId  Int?
+  resolvedByStaffId Int?
+  resolutionNote    String?   @db.Text
+  createdAt         DateTime  @default(now())
+  branch            Branch?   @relation(fields: [branchId], references: [id])
+  facility          Facility? @relation(fields: [facilityId], references: [id])
+  resolvedByStaff   Staff?    @relation("NotificationResolvedByStaff", fields: [resolvedByStaffId], references: [id])
+  resolvedByUser    User?     @relation("NotificationResolvedByUser", fields: [resolvedByUserId], references: [id])
+  targetStaff       Staff?    @relation("NotificationTargetStaff", fields: [targetStaffId], references: [id])
+  targetUser        User?     @relation("NotificationTargetUser", fields: [targetUserId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([targetUserId])
+  @@index([targetStaffId])
+  @@index([isRead])
+  @@index([isResolved])
+  @@index([moduleName])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt])
+  @@index([facilityId, branchId, isResolved, createdAt])
+  @@index([targetUserId, isRead, createdAt])
+  @@index([targetStaffId, isRead, createdAt])
+  @@index([moduleName, isResolved, createdAt])
+  @@index([resolvedByUserId])
+  @@index([resolvedByStaffId])
+  @@map("notifications")
+}
+
+model BranchMedicineStock {
+  id             Int                     @id @default(autoincrement())
+  facilityId     Int
+  branchId       Int
+  medicineId     Int
+  stockQuantity  Int                     @default(0)
+  reorderLevel   Int                     @default(0)
+  unitPrice      Float                   @default(0)
+  isActive       Boolean                 @default(true)
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  buyingPrice    Float                   @default(0)
+  branch         Branch                  @relation(fields: [branchId], references: [id])
+  facility       Facility                @relation(fields: [facilityId], references: [id])
+  medicine       Medicine                @relation(fields: [medicineId], references: [id])
+  stockMovements PharmacyStockMovement[]
+
+  @@unique([branchId, medicineId])
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([medicineId])
+  @@index([facilityId, branchId, isActive])
+  @@index([branchId, stockQuantity])
+  @@index([branchId, updatedAt])
+  @@index([createdAt], map: "branch_stock_createdAt_idx")
+  @@index([updatedAt], map: "branch_stock_updatedAt_idx")
+  @@map("branch_medicine_stocks")
+}
+
+model OtcSale {
+  id               Int                     @id @default(autoincrement())
+  saleNumber       String                  @unique @db.VarChar(50)
+  saleType         String                  @default("OTC") @db.VarChar(20)
+  customerName     String?                 @db.VarChar(150)
+  customerPhone    String?                 @db.VarChar(30)
+  status           String                  @default("DRAFT") @db.VarChar(50)
+  paymentStatus    String                  @default("UNPAID") @db.VarChar(50)
+  subtotal         Float                   @default(0)
+  discountAmount   Float                   @default(0)
+  taxAmount        Float                   @default(0)
+  totalAmount      Float                   @default(0)
+  paidAmount       Float                   @default(0)
+  balanceAmount    Float                   @default(0)
+  soldAt           DateTime?
+  notes            String?                 @db.Text
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  facilityId       Int
+  branchId         Int
+  patientId        Int?
+  createdByStaffId Int
+  items            OtcSaleItem[]
+  payments         OtcSalePayment[]
+  branch           Branch                  @relation(fields: [branchId], references: [id])
+  createdBy        Staff                   @relation("OtcSaleCreatedByStaff", fields: [createdByStaffId], references: [id])
+  facility         Facility                @relation(fields: [facilityId], references: [id])
+  patient          Patient?                @relation(fields: [patientId], references: [id])
+  stockMovements   PharmacyStockMovement[]
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([patientId])
+  @@index([createdByStaffId])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@index([soldAt])
+  @@index([facilityId, branchId, status, createdAt])
+  @@map("otc_sales")
+}
+
+model OtcSaleItem {
+  id                   Int                     @id @default(autoincrement())
+  saleId               Int
+  medicineId           Int
+  medicineNameSnapshot String                  @db.VarChar(180)
+  dosageFormSnapshot   String?                 @db.VarChar(100)
+  strengthSnapshot     String?                 @db.VarChar(100)
+  quantity             Int                     @default(1)
+  unitPrice            Float                   @default(0)
+  lineTotal            Float                   @default(0)
+  stockBefore          Int?
+  stockAfter           Int?
+  notes                String?                 @db.Text
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  medicine             Medicine                @relation(fields: [medicineId], references: [id])
+  sale                 OtcSale                 @relation(fields: [saleId], references: [id])
+  stockMovements       PharmacyStockMovement[]
+
+  @@index([saleId])
+  @@index([medicineId])
+  @@map("otc_sale_items")
+}
+
+model OtcSalePayment {
+  id                      Int       @id @default(autoincrement())
+  saleId                  Int
+  facilityId              Int
+  branchId                Int
+  paymentMethod           String    @db.VarChar(50)
+  statusCode              String    @default("COMPLETED") @db.VarChar(50)
+  amount                  Float     @default(0)
+  transactionRef          String?   @db.VarChar(120)
+  phoneNumber             String?   @db.VarChar(30)
+  mpesaReceiptNumber      String?   @db.VarChar(100)
+  merchantRequestId       String?   @db.VarChar(100)
+  checkoutRequestId       String?   @db.VarChar(100)
+  insuranceProviderName   String?   @db.VarChar(150)
+  insuranceSchemeName     String?   @db.VarChar(150)
+  insuranceMemberNumber   String?   @db.VarChar(120)
+  principalMemberName     String?   @db.VarChar(150)
+  relationshipToPrincipal String?   @db.VarChar(80)
+  authorizationNumber     String?   @db.VarChar(120)
+  policyNumber            String?   @db.VarChar(120)
+  insuranceCoveredAmount  Float     @default(0)
+  patientCoPayAmount      Float     @default(0)
+  insuranceClaimReference String?   @db.VarChar(120)
+  insuranceClaimStatus    String?   @db.VarChar(50)
+  paidAt                  DateTime?
+  requestedAt             DateTime  @default(now())
+  confirmedAt             DateTime?
+  receivedByStaffId       Int?
+  notes                   String?   @db.Text
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  branch                  Branch    @relation(fields: [branchId], references: [id])
+  facility                Facility  @relation(fields: [facilityId], references: [id])
+  receivedBy              Staff?    @relation("OtcSalePaymentReceivedByStaff", fields: [receivedByStaffId], references: [id], map: "otc_sale_payments_receivedBy_staff_fkey")
+  sale                    OtcSale   @relation(fields: [saleId], references: [id])
+
+  @@index([saleId])
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([paymentMethod])
+  @@index([statusCode])
+  @@index([insuranceClaimStatus])
+  @@index([mpesaReceiptNumber])
+  @@index([checkoutRequestId])
+  @@index([createdAt])
+  @@index([facilityId, branchId, paymentMethod, createdAt])
+  @@index([receivedByStaffId], map: "otc_sale_payments_receivedByStaffId_fkey")
+  @@map("otc_sale_payments")
+}
+
+model PharmacyStockMovement {
+  id                 Int                  @id @default(autoincrement())
+  facilityId         Int
+  branchId           Int
+  medicineId         Int
+  branchStockId      Int?
+  sourceType         String               @db.VarChar(50)
+  sourceEntityId     String?              @db.VarChar(100)
+  movementType       String               @db.VarChar(50)
+  quantity           Int
+  stockBefore        Int
+  stockAfter         Int
+  otcSaleId          Int?
+  otcSaleItemId      Int?
+  performedByStaffId Int?
+  notes              String?              @db.Text
+  createdAt          DateTime             @default(now())
+  branch             Branch               @relation(fields: [branchId], references: [id])
+  branchStock        BranchMedicineStock? @relation(fields: [branchStockId], references: [id])
+  facility           Facility             @relation(fields: [facilityId], references: [id])
+  medicine           Medicine             @relation(fields: [medicineId], references: [id])
+  otcSale            OtcSale?             @relation(fields: [otcSaleId], references: [id])
+  otcSaleItem        OtcSaleItem?         @relation(fields: [otcSaleItemId], references: [id])
+  performedBy        Staff?               @relation("PharmacyStockMovementStaff", fields: [performedByStaffId], references: [id])
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([medicineId])
+  @@index([branchStockId])
+  @@index([sourceType])
+  @@index([movementType])
+  @@index([otcSaleId])
+  @@index([otcSaleItemId])
+  @@index([performedByStaffId])
+  @@index([createdAt])
+  @@index([facilityId, branchId, sourceType, createdAt])
+  @@map("pharmacy_stock_movements")
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  tokenHash String    @db.VarChar(255)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+model OperationalModuleRecord {
+  id              Int       @id @default(autoincrement())
+  moduleSlug      String    @db.VarChar(80)
+  moduleTitle     String    @db.VarChar(150)
+  recordNumber    String    @unique @db.VarChar(80)
+  title           String    @db.VarChar(200)
+  description     String?   @db.Text
+  workflowStage   String    @db.VarChar(100)
+  statusCode      String    @default("OPEN") @db.VarChar(50)
+  priorityCode    String    @default("ROUTINE") @db.VarChar(50)
+  facilityId      Int
+  branchId        Int?
+  patientId       Int?
+  assignedStaffId Int?
+  createdByUserId Int?
+  dueAt           DateTime?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  closedAt        DateTime?
+  metadata        Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([facilityId])
+  @@index([branchId])
+  @@index([moduleSlug])
+  @@index([statusCode])
+  @@index([priorityCode])
+  @@index([createdAt])
+  @@map("operational_module_records")
+}
+
+model DataOutboxEvent {
+  id          Int       @id @default(autoincrement())
+  eventType   String    @db.VarChar(120)
+  entityType  String    @db.VarChar(120)
+  entityId    String    @db.VarChar(120)
+  facilityId  Int?
+  branchId    Int?
+  payload     Json?
+  status      String    @default("PENDING") @db.VarChar(40)
+  createdAt   DateTime  @default(now())
+  processedAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([eventType])
+  @@index([facilityId, branchId, createdAt], map: "data_outbox_events_facility_branch_createdAt_idx")
+  @@map("data_outbox_events")
+}
+
+model EtimsInvoice {
+  id                  Int            @id @default(autoincrement())
+  documentType        String         @default("SALE") @db.VarChar(30)
+  traderInvoiceNumber String         @unique @db.VarChar(100)
+  statusCode          String         @default("PENDING") @db.VarChar(40)
+  receiptTypeCode     String         @default("S") @db.VarChar(5)
+  paymentTypeCode     String?        @db.VarChar(5)
+  cuInvoiceNumber     String?        @db.VarChar(120)
+  cuReceiptNumber     String?        @db.VarChar(120)
+  internalData        String?        @db.VarChar(255)
+  receiptSignature    String?        @db.VarChar(255)
+  sdcId               String?        @db.VarChar(120)
+  mrcNumber           String?        @db.VarChar(120)
+  sdcDateTime         DateTime?
+  qrCodeUrl           String?        @db.Text
+  qrCodeData          String?        @db.Text
+  totalTaxableAmount  Float          @default(0)
+  totalTaxAmount      Float          @default(0)
+  totalAmount         Float          @default(0)
+  currency            String         @default("INR") @db.VarChar(10)
+  taxBreakdown        Json?
+  requestPayload      Json?
+  responsePayload     Json?
+  errorMessage        String?        @db.Text
+  cancelReason        String?        @db.Text
+  attemptCount        Int            @default(0)
+  correlationId       String?        @db.VarChar(120)
+  lastAttemptAt       DateTime?
+  submittedAt         DateTime?
+  acceptedAt          DateTime?
+  cancelledAt         DateTime?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  invoiceId           Int
+  originalId          Int?
+  facilityId          Int
+  branchId            Int?
+  invoice             Invoice        @relation(fields: [invoiceId], references: [id])
+  original            EtimsInvoice?  @relation("EtimsInvoiceAmendments", fields: [originalId], references: [id])
+  amendments          EtimsInvoice[] @relation("EtimsInvoiceAmendments")
+
+  @@index([invoiceId])
+  @@index([originalId])
+  @@index([statusCode])
+  @@index([documentType, statusCode])
+  @@index([facilityId, branchId, statusCode])
+  @@index([cuInvoiceNumber])
+  @@index([createdAt])
+  @@map("etims_invoices")
+}
+
+model IntegrationOutboundRequest {
+  id             Int       @id @default(autoincrement())
+  integration    String    @db.VarChar(30)
+  operation      String    @db.VarChar(80)
+  entityType     String    @db.VarChar(80)
+  entityId       String    @db.VarChar(120)
+  payload        Json?
+  status         String    @default("PENDING") @db.VarChar(30)
+  attemptCount   Int       @default(0)
+  maxAttempts    Int       @default(8)
+  nextAttemptAt  DateTime  @default(now())
+  lastError      String?   @db.Text
+  lastHttpStatus Int?
+  correlationId  String?   @db.VarChar(120)
+  idempotencyKey String    @unique
+  facilityId     Int?
+  branchId       Int?
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status, nextAttemptAt])
+  @@index([integration, status])
+  @@index([entityType, entityId])
+  @@index([correlationId])
+  @@index([createdAt])
+  @@map("integration_outbound_requests")
+}
+
+model IntegrationApiLog {
+  id            Int      @id @default(autoincrement())
+  integration   String   @db.VarChar(30)
+  endpoint      String   @db.VarChar(255)
+  method        String   @db.VarChar(10)
+  requestId     String   @db.VarChar(120)
+  correlationId String?  @db.VarChar(120)
+  httpStatus    Int?
+  outcome       String   @db.VarChar(30)
+  latencyMs     Int      @default(0)
+  retryCount    Int      @default(0)
+  errorMessage  String?  @db.Text
+  facilityId    Int?
+  createdAt     DateTime @default(now())
+
+  @@index([integration, createdAt])
+  @@index([correlationId])
+  @@index([requestId])
+  @@index([outcome, createdAt])
+  @@map("integration_api_logs")
+}
+
+model DhaTransaction {
+  id               Int       @id @default(autoincrement())
+  transactionType  String    @db.VarChar(60)
+  statusCode       String    @default("PENDING") @db.VarChar(30)
+  externalRef      String?   @db.VarChar(160)
+  fhirResourceType String?   @db.VarChar(60)
+  apiVersion       String?   @db.VarChar(20)
+  requestPayload   Json?
+  responsePayload  Json?
+  errorMessage     String?   @db.Text
+  correlationId    String?   @db.VarChar(120)
+  patientId        Int?
+  invoiceId        Int?
+  shaClaimId       Int?
+  consultationId   Int?
+  facilityId       Int
+  branchId         Int?
+  submittedAt      DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([transactionType, statusCode])
+  @@index([patientId])
+  @@index([invoiceId])
+  @@index([shaClaimId])
+  @@index([facilityId, createdAt])
+  @@index([correlationId])
+  @@index([createdAt])
+  @@map("dha_transactions")
+}
+
+// ---------------------------------------------------------------------------
+// Public Appointment Booking Requests
+// Submitted by patients via the /book-appointment public page (no auth).
+// Staff review and confirm/reject from the Appointments module.
+// ---------------------------------------------------------------------------
+model PublicBookingRequest {
+  id              Int       @id @default(autoincrement())
+  /// Auto-generated human-readable reference e.g. BK-20261012-0001
+  bookingRef      String    @unique @db.VarChar(50)
+  /// Patient-supplied details
+  patientName     String    @db.VarChar(150)
+  patientPhone    String    @db.VarChar(30)
+  patientEmail    String?   @db.VarChar(255)
+  /// Preferred date — date part only stored (time is advisory)
+  preferredDate   DateTime
+  preferredTime   String?   @db.VarChar(20)
+  visitReason     String?   @db.Text
+  notes           String?   @db.Text
+  /// PENDING | CONFIRMED | REJECTED | CANCELLED
+  statusCode      String    @default("PENDING") @db.VarChar(30)
+  /// Staff notes on confirmation or rejection
+  staffNotes      String?   @db.Text
+  reviewedAt      DateTime?
+  reviewedByUserId Int?
+  /// Optional facility scoping (set by the hospital on the booking link)
+  facilityId      Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([statusCode])
+  @@index([facilityId])
+  @@index([preferredDate])
+  @@index([createdAt])
+  @@map("public_booking_requests")
+}
