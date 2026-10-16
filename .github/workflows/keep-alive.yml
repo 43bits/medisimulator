@@ -1,0 +1,67 @@
+################################################################################
+# keep-alive.yml
+# Pings the Render backend every 10 minutes to prevent the free-tier service
+# from sleeping after 15 minutes of inactivity.
+#
+# SETUP
+# 1. Go to your GitHub repo → Settings → Secrets and variables → Actions.
+# 2. Add a repository secret named RENDER_BACKEND_URL with the value:
+#      https://<your-service>.onrender.com
+#    (no trailing slash)
+# 3. The workflow runs automatically on the schedule below and can also be
+#    triggered manually from the Actions tab.
+################################################################################
+
+name: Keep Render Backend Alive
+
+on:
+  schedule:
+    # Every 10 minutes — well inside Render's 15-min sleep threshold.
+    # Cron syntax: minute hour day month weekday (all UTC)
+    - cron: '*/10 * * * *'
+  workflow_dispatch:   # allow manual trigger from the Actions UI
+
+jobs:
+  ping:
+    name: Ping /health
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Wake up backend
+        env:
+          BACKEND_URL: ${{ secrets.RENDER_BACKEND_URL }}
+        run: |
+          if [ -z "$BACKEND_URL" ]; then
+            echo "::warning::RENDER_BACKEND_URL secret is not set — skipping ping"
+            exit 0
+          fi
+
+          HEALTH_URL="${BACKEND_URL}/health"
+          echo "Pinging $HEALTH_URL"
+
+          # Allow up to 60 s for a cold-start response; retry 3 times on failure
+          for attempt in 1 2 3; do
+            HTTP_STATUS=$(curl -s -o /tmp/health_response.json \
+              -w "%{http_code}" \
+              --max-time 60 \
+              --retry 0 \
+              "$HEALTH_URL" || echo "000")
+
+            echo "Attempt $attempt — HTTP $HTTP_STATUS"
+            cat /tmp/health_response.json 2>/dev/null || true
+            echo ""
+
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "✅ Backend is healthy"
+              exit 0
+            fi
+
+            if [ $attempt -lt 3 ]; then
+              echo "Waiting 10s before retry..."
+              sleep 10
+            fi
+          done
+
+          echo "::error::Backend health check failed after 3 attempts (last HTTP status: $HTTP_STATUS)"
+          exit 1
