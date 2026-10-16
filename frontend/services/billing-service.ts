@@ -1,4 +1,4 @@
-import { apiDownload, apiFetch, API_BASE_URL } from "@/lib/api";
+﻿import { apiDownload, apiFetch, getApiBase } from "@/lib/api";
 
 export interface BillingServiceItem {
   id: number;
@@ -651,7 +651,7 @@ export function downloadPublicVerifiedInvoicePdf(
   );
 }
 export function getInvoicePdfUrl(id: number) {
-  return `${API_BASE_URL}/billing/invoices/${id}/pdf`;
+  return `${getApiBase()}/billing/invoices/${id}/pdf`;
 }
 
 export function downloadInvoicePdf(id: number, invoiceNumber?: string) {
