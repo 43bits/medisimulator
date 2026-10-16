@@ -17,7 +17,7 @@ palette, and structural skeleton loading across all 90+ screens.
 
 ```bash
 npm ci
-# .env.local: NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+# .env.local: NEXT_API_BASE_URL=http://localhost:3000
 npm run dev        # http://localhost:3001
 ```
 
@@ -55,7 +55,7 @@ Conventions:
 
 | Variable | Purpose |
 | --- | --- |
-| `NEXT_PUBLIC_API_BASE_URL` | Backend base URL (required on deployments) |
+| `NEXT_API_BASE_URL` | Backend base URL (required on deployments) |
 | `NEXT_PUBLIC_APP_URL` | Canonical app URL for links/QRs |
 
 ## Deployment

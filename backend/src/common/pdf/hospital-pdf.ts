@@ -938,7 +938,7 @@ function publicDocumentBaseUrl() {
     process.env.API_PUBLIC_URL ||
     process.env.BACKEND_PUBLIC_URL ||
     process.env.SERVER_PUBLIC_URL ||
-    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    process.env.NEXT_API_BASE_URL ||
     (process.env.RAILWAY_PUBLIC_DOMAIN
       ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
       : undefined) ||

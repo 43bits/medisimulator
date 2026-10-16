@@ -2,7 +2,7 @@ function getApiBase(): string {
   // Always use the Next.js API proxy route so no env var is needed in the browser.
   // Server-side: call backend directly to avoid a round-trip.
   if (typeof window === "undefined") {
-    return process.env.NEXT_PUBLIC_API_BASE_URL?.trim() ?? "http://localhost:3000";
+    return process.env.NEXT_API_BASE_URL?.trim() ?? "http://localhost:3000";
   }
   return "/api";
 }
@@ -67,7 +67,7 @@ export async function apiFetch<T>(
     }
 
     throw new ApiError(
-      "Unable to reach the hospital server. Verify the backend is online and NEXT_PUBLIC_API_BASE_URL points to it.",
+      "Unable to reach the hospital server. Verify the backend is online and NEXT_API_BASE_URL points to it.",
       0,
     );
   } finally {
@@ -138,7 +138,7 @@ export async function apiDownload(path: string, fileName: string) {
     }
 
     throw new ApiError(
-      "Unable to reach the hospital server. Verify the backend is online and NEXT_PUBLIC_API_BASE_URL points to it.",
+      "Unable to reach the hospital server. Verify the backend is online and NEXT_API_BASE_URL points to it.",
       0,
     );
   } finally {
