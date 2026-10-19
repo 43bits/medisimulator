@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const BACKEND = process.env.NEXT_API_BASE_URL ?? "http://localhost:3000";
+const BACKEND = process.env.NEXT_API_BASE_URL ?? "https://medisimulator.onrender.com";
 
 type Ctx = { params: Promise<{ proxy: string[] }> };
 
