@@ -16,13 +16,24 @@ async function proxy(req: NextRequest, ctx: Ctx) {
 
   const isBodyMethod = !["GET", "HEAD"].includes(req.method);
 
-  const upstream = await fetch(url.toString(), {
-    method: req.method,
-    headers: reqHeaders,
-    body: isBodyMethod ? req.body : undefined,
-    // @ts-expect-error duplex needed for streaming body
-    duplex: "half",
-  });
+  // Read body as ArrayBuffer — streaming via req.body + duplex:"half" is
+  // unreliable on Vercel serverless and causes it to return an HTML 500 page.
+  const body = isBodyMethod ? await req.arrayBuffer() : undefined;
+
+  let upstream: Response;
+  try {
+    upstream = await fetch(url.toString(), {
+      method: req.method,
+      headers: reqHeaders,
+      body: body ?? undefined,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "upstream fetch failed";
+    return NextResponse.json(
+      { statusCode: 502, message: `Proxy could not reach backend: ${message}` },
+      { status: 502 },
+    );
+  }
 
   const resHeaders = new Headers(upstream.headers);
   resHeaders.delete("content-encoding"); // avoid double-decompression
