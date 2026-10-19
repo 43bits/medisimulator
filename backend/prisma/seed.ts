@@ -8,7 +8,6 @@ async function main() {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // 1. Create or Update the Role first
-  // We use 'code' because your schema requires it as a unique identifier
   const adminRole = await prisma.role.upsert({
     where: { code: 'ADMIN' },
     update: {},
@@ -21,8 +20,37 @@ async function main() {
     },
   });
 
-  // 2. Create or Update the Admin User
-  const admin = await prisma.user.upsert({
+  // 2. Create a default Facility so all users have a home facility
+  const facility = await prisma.facility.upsert({
+    where: { code: 'FAC001' },
+    update: {},
+    create: {
+      code: 'FAC001',
+      name: 'Invinceible Core Hospital',
+      facilityType: 'HOSPITAL',
+      isActive: true,
+      subscriptionStatus: 'ACTIVE',
+      subscriptionStartedAt: new Date(),
+      subscriptionPaidThrough: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+    },
+  });
+  console.log(`✅ Facility: id=${facility.id}  name="${facility.name}"`);
+
+  // 3. Create a default Branch inside the facility
+  const branch = await prisma.branch.upsert({
+    where: { code: 'BR001' },
+    update: {},
+    create: {
+      code: 'BR001',
+      name: 'Main Branch',
+      facilityId: facility.id,
+      isActive: true,
+    },
+  });
+  console.log(`✅ Branch:   id=${branch.id}  name="${branch.name}"`);
+
+  // 4. Create or Update the Admin User — with home facility assigned
+  await prisma.user.upsert({
     where: { email: 'admin@hms.com' },
     update: {},
     create: {
@@ -32,11 +60,13 @@ async function main() {
       fullName: 'System Admin',
       isActive: true,
       canAccessAllBranchesInFacility: true,
-      roleId: adminRole.id, // Links the user to the Role created above
+      roleId: adminRole.id,
+      homeFacilityId: facility.id,
+      homeBranchId: branch.id,
     },
   });
 
-  console.log('✅ Seed successful! Admin user created.');
+  console.log('✅ Seed successful! Admin user created with facility assigned.');
 }
 
 main()

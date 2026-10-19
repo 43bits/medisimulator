@@ -38,6 +38,7 @@ export type NavSection = {
 // ─── Role groupings used across nav items ───────────────────────────────────
 const ALL_STAFF = [
   "SUPER_ADMIN", "ADMIN", "FACILITY_ADMIN", "BRANCH_ADMIN",
+  "RECEPTIONIST",
   "DOCTOR", "CLINICIAN", "NURSE", "TRIAGE_NURSE", "IPD_NURSE", "WARD_MANAGER",
   "LAB_TECHNICIAN", "LAB_MANAGER",
   "PHARMACIST", "PHARMACY_MANAGER",
