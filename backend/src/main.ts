@@ -60,10 +60,12 @@ async function bootstrap() {
 
   // ── CORS ──────────────────────────────────────────────────────────────────
   const allowedOrigins = buildAllowedOrigins(configService);
+  logger.log(`CORS allowed origins: ${JSON.stringify(allowedOrigins)}`);
   app.enableCors({
     origin: (origin, cb) => {
       if (!origin) return cb(null, true);
       if (allowedOrigins.includes(normalizeOrigin(origin))) return cb(null, true);
+      logger.warn(`CORS rejected origin: "${origin}" — allowed: ${JSON.stringify(allowedOrigins)}`);
       return cb(new Error('CORS origin not allowed'), false);
     },
     credentials: true,
